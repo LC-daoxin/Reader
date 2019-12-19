@@ -1,14 +1,16 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+// import Home from "../views/Home.vue";
+import Ebook from "@/Ebook";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: Home
+    // name: "home",
+    // component: Home
+    redirect: "/ebook"
   },
   {
     path: "/about",
@@ -18,6 +20,11 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue")
+  },
+  {
+    path: "/ebook",
+    name: "ebook",
+    component: Ebook
   }
 ];
 
