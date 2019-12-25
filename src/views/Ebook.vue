@@ -1,32 +1,40 @@
 <template>
   <div class="ebook">
+    <title-bar :menuShow="menuShow"/>
     <div id="read"></div>
     <div class="mask" @touchstart="touchStart" @touchend="touchEnd">
       <div class="left" @click="prevPage"></div>
-      <div class="center"></div>
+      <div class="center" @click="handlemenuShow"></div>
       <div class="right" @click="nextPage"></div>
     </div>
+    <bottom-bar :menuShow="menuShow"/>
   </div>
 </template>
 
 <script>
 import Epub from "epubjs";
+import TitleBar from "@/components/TitleBar";
+import BottomBar from "@/components/BottomBar";
 const BOOK_URL = "1.epub";
 export default {
   name: "ebook",
-  data () {
+  components: {
+    TitleBar,
+    BottomBar
+  },
+  data() {
     return {
-      startX: '',
-      startY: '',
-      moveEndX: '',
-      moveEndY: ''
-    }
+      startX: null,
+      startY: null,
+      moveEndX: null,
+      moveEndY: null,
+      menuShow: false
+    };
   },
   methods: {
     // 电子书的解析和渲染
     showEpub() {
       this.book = new Epub(BOOK_URL);
-      console.log(this.book);
       this.renditon = this.book.renderTo("read", {
         width: window.innnerWidth,
         height: window.innerHeight
@@ -45,20 +53,23 @@ export default {
     },
     touchStart(ev) {
       ev = ev || event;
-      this.startX = ev.targetTouches[0].clientX
-      this.startY = ev.targetTouches[0].clientY
+      this.startX = ev.targetTouches[0].clientX;
+      this.startY = ev.targetTouches[0].clientY;
     },
     touchEnd(ev) {
       ev = ev || event;
-      this.moveEndX = ev.changedTouches[0].clientX
-      this.moveEndY = ev.changedTouches[0].clientY
-      let X = this.moveEndX - this.startX
+      this.moveEndX = ev.changedTouches[0].clientX;
+      this.moveEndY = ev.changedTouches[0].clientY;
+      let X = this.moveEndX - this.startX;
       let Y = this.moveEndY - this.startY;
-      if ( Math.abs(X) > Math.abs(Y) && X > 0 ) {
-        this.prevPage()
-      } else if ( Math.abs(X) > Math.abs(Y) && X < 0 ) {
-        this.nextPage()
+      if (Math.abs(X) > Math.abs(Y) && X > 0 && Math.abs(X) > 10) {
+        this.prevPage();
+      } else if (Math.abs(X) > Math.abs(Y) && X < 0 && Math.abs(X) > 10) {
+        this.nextPage();
       }
+    },
+    handlemenuShow() {
+      this.menuShow = !this.menuShow
     }
   },
   mounted() {
@@ -68,7 +79,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "assets/styles/global";
+@import "../assets/styles/global";
 .ebook {
   position: relative;
   .mask {
