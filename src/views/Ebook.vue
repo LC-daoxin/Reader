@@ -7,7 +7,7 @@
       <div class="center" @click="handlemenuShow"></div>
       <div class="right" @click="nextPage"></div>
     </div>
-    <bottom-bar :menuShow="menuShow"/>
+    <bottom-bar :menuShow="menuShow" ref="bottomBar"/>
   </div>
 </template>
 
@@ -40,6 +40,16 @@ export default {
         height: window.innerHeight
       });
       this.renditon.display();
+      // 获取Theme对象
+      this.themes = this.renditon.themes
+      // 设置默认字体
+      this.setDefaultFont(this.$store.state.defaultFont)
+    },
+    // 设置默认字体
+    setDefaultFont(fontSize) {
+      if (this.themes) {
+        this.themes.fontSize(fontSize + 'px')
+      }
     },
     prevPage() {
       if (this.renditon) {
@@ -70,10 +80,24 @@ export default {
     },
     handlemenuShow() {
       this.menuShow = !this.menuShow
+      if (!this.menuShow) {
+        this.$refs.bottomBar.handleSetHide()
+      }
     }
   },
   mounted() {
     this.showEpub();
+  },
+  computed: {
+    Font() {
+      return this.$store.state.defaultFont
+    }
+  },
+  watch: {
+    Font(curVal) {
+      //这里的curVal就是需要监听的值
+      this.setDefaultFont(curVal)
+    }
   }
 };
 </script>
